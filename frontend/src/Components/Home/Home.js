@@ -2,9 +2,11 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import "./Home.css";
 import clocklogo from "../../images/clocklogo.svg";
+import ProfilePicture from "../../images/ProfilePicture.jpg";
 import imageex from "../../images/imageex.svg";
 // import hero from "../../images/hero.svg";
 import hero from "../../images/HomeHsk1.png";
+import { ButtonOptions } from "../ButtonOptions";
 
 const Home = (props) => {
   const history = useHistory();
@@ -39,46 +41,50 @@ const Home = (props) => {
                   onClick={() => history.push("/Howtoplay")}
                   className="btn homebtn white"
                 >
-                  HOW TO PLAY
+                  HOW TO USE IT
                 </button>
               </div>
             ) : (
-              <div className="buttoncontainer2">
-                <button
-                  onClick={() => history.push("/quiz")}
-                  className="btn homebtn playnow"
-                >
-                  PLAY NOW
-                </button>
-                <button
-                  onClick={() => history.push("/leaderboard")}
-                  className="btn homebtn white"
-                >
-                  LEADERBOARD
-                </button>
-              </div>
+              // <div className="buttoncontainer2">
+              //   <button
+              //     onClick={() => history.push("/quiz")}
+              //     className="btn homebtn playnow"
+              //   >
+              //     PLAY NOW
+              //   </button>
+              //   <button
+              //     onClick={() => history.push("/leaderboard")}
+              //     className="btn homebtn white"
+              //   >
+              //     LEADERBOARD
+              //   </button>
+              // </div>
+              <ButtonOptions />
             )}
           </div>
         </div>
 
         <div className="imagecontainer">
-          <img src={imageex} className="imageex" alt="imageex" width="400" />
-          <img src={hero} className="herologo" alt="imageex" width="350" />
+          <div className="theme-toggle">
+            {/* <h2>{props.theme === "light" ? "Light" : "Dark"} Theme</h2> */}
+            <i onClick={switchTheme} class="fas fa-toggle-on"></i>
+          </div>
+          <div>
+            <img src={imageex} className="imageex" alt="imageex" width="400" />
+            <img src={hero} className="herologo" alt="imageex" width="350" />
+          </div>
+
           {/* <img
-          src={clocklogo}
-          className="clocklogo"
-          alt="clocklogo"
-          width="200"
-        /> */}
+            src={clocklogo}
+            className="clocklogo"
+            alt="clocklogo"
+            width="200"
+          /> */}
         </div>
         {/* <div className="theme-toggle">
         <h2>Light Theme</h2>
         <i onClick={switchTheme} class="fas fa-toggle-on"></i>
       </div> */}
-      </div>
-      <div className="theme-toggle">
-        <h2>{props.theme === "light" ? "Light" : "Dark"} Theme</h2>
-        <i onClick={switchTheme} class="fas fa-toggle-on"></i>
       </div>
     </>
   );

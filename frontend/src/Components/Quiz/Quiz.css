@@ -3,7 +3,7 @@ div.content {
 }
 .Quiz {
   display: flex;
-  height: 100%;
+  /* height: 100%; */
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
@@ -15,7 +15,7 @@ div.content {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 
 .Quiz > div:nth-child(2) {

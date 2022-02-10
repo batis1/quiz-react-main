@@ -16,7 +16,9 @@ const Howtoplay = () => {
           </div>
 
           <div>
-            <p className="rule">Answer as many questions as you can in the time allowed.</p>
+            <p className="rule">
+              Answer as many questions as you can in the time allowed.
+            </p>
           </div>
         </div>
 
@@ -26,7 +28,8 @@ const Howtoplay = () => {
           </div>
           <div>
             <p className="rule">
-              Answer a question correctly to add more time to the bomb. The harder the question, the more time you get.
+              Answer a question correctly to add more time to the bomb. The
+              harder the question, the more time you get.
             </p>
           </div>
         </div>
@@ -36,7 +39,9 @@ const Howtoplay = () => {
             <img src={rule3} width="50px" alt="rule number indicator" />
           </div>
           <div>
-            <p className="rule">If the timer expires, the bomb goes off and it's game over.</p>
+            <p className="rule">
+              If the timer expires, the bomb goes off and it's game over.
+            </p>
           </div>
         </div>
 
@@ -49,7 +54,7 @@ const Howtoplay = () => {
           </div>
         </div>
       </div>
-      <div className="bombCatch">
+      {/* <div className="bombCatch">
         <svg
           className="bombIcon"
           width="220"
@@ -64,7 +69,7 @@ const Howtoplay = () => {
           />
         </svg>
         <h1 className="catchLine">Can you beat the bomb?</h1>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -14,22 +14,38 @@ font-family: 'Roboto Mono', monospace; - for bomb countdown
 /*----- Colours -----*/
 /* All colours can be used using var(--colourYouWant) */
 
+:root {
+  /* Main colors */
+  --lightAccent: #ffffff; /* white */
+  --darkAccent: #363537; /* jet */
+  --redAccent: #bf211e; /* venetian red */
+  --orangeAccent: #ff8c42; /* mango tango */
+  --yellowAccent: #e9ce2c; /* safety yellow */
+  --greyAccent: #c4c4c4; /* lighter grey */
+  --darkerGrey: #8b939c; /* darker grey for hover */
+  --darkerOrange: #e67329; /* darker orange for hover */
+}
+
 [data-theme="light"] {
-  --background: #ffffff;
-  --text-primary: #000;
-  --text-secondary: #8e05c2;
-  --accent: #8e05c2;
-  --border: #333;
-  --form-bg: #fff;
+  --lightAccent: #363537; /* white */
+  --darkAccent: #dbd5d5; /* jet */
+  --redAccent: #bf211e; /* venetian red */
+  --orangeAccent: #ff8c42; /* mango tango */
+  --yellowAccent: #e9ce2c; /* safety yellow */
+  --greyAccent: #242121; /* lighter grey */
+  --darkerGrey: #8b939c; /* darker grey for hover */
+  --darkerOrange: #e67329; /* darker orange for hover */
 }
 
 [data-theme="dark"] {
-  --background: #000;
-  --text-primary: #fff;
-  --text-secondary: #8e05c2;
-  --accent: #8e05c2;
-  --border: #808080;
-  --form-bg: #191919;
+  --lightAccent: #ffffff; /* white */
+  --darkAccent: #363537; /* jet */
+  --redAccent: #bf211e; /* venetian red */
+  --orangeAccent: #ff8c42; /* mango tango */
+  --yellowAccent: #e9ce2c; /* safety yellow */
+  --greyAccent: #c4c4c4; /* lighter grey */
+  --darkerGrey: #8b939c; /* darker grey for hover */
+  --darkerOrange: #e67329; /* darker orange for hover */
 }
 /*----- Global Styles -----*/
 
@@ -45,9 +61,7 @@ body {
   margin: 0;
   line-height: 1.4;
   font-family: "Poppins", sans-serif;
-  /* background: var(--darkAccent); */
-  background-color: var(--background);
-  color: var(--text-primary);
+  background: var(--darkAccent);
   /* background-image: url("bkgroundbomb.svg"); */
   background-repeat: no-repeat;
   background-position-y: 35%;
@@ -59,14 +73,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 .app {
-  background-color: var(--background);
-  color: var(--text-primary);
-  height: 100vh;
-  display: flex;
+  background-color: var(--darkAccent);
+  color: var(--lightAccent);
+  /* background: var(--darkAccent); */
+  /* height: 100%; */
+  /* display: flex;
   flex-direction: column;
   justify-content: center;
   font-size: 0.8rem;
-  transition: all 0.5s;
+  transition: all 0.5s;  */
 }
 
 h1,

@@ -27,7 +27,7 @@ POST {{url}}
 Content-Type: application/json
 
 {
-    "category":"Reading",
+    "category":"Writing",
     "type":"Multiple 4",
     "difficulty": "esay",
     "question":"你的爱好是什么?",

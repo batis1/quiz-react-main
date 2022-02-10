@@ -3,6 +3,7 @@ import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import "./Navbar.css";
 import Logo from "../Logo/Logo";
+import { DropdownOptions } from "../DropdownOptions/DropdownOptions";
 
 const Navbar = ({ user, setUser }) => {
   const useBigLogo = (query) => {
@@ -28,7 +29,11 @@ const Navbar = ({ user, setUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const handleToggle = () => setMenuOpen((prev) => !prev);
   const closeMenu = () => setMenuOpen(false);
-
+  const options = [
+    { value: "Game", to: "/quiz/true" },
+    { value: "Tutorial", to: "/tutorial" },
+    { value: "Words saved", to: "" },
+  ];
   return (
     <header>
       {isPageWide ? (
@@ -54,14 +59,15 @@ const Navbar = ({ user, setUser }) => {
           >
             Home
           </NavLink>
-          <NavLink
-            to="/quiz"
+          <DropdownOptions options={options} className="navbar-item" />
+          {/* <NavLink
+            to="/quiz/true"
             className="navbar-item"
             activeClassName="navbar-selected"
             onClick={closeMenu}
           >
             Quiz
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/leaderboard"
             className="navbar-item"
@@ -87,14 +93,14 @@ const Navbar = ({ user, setUser }) => {
           >
             result analysis
           </NavLink> */}
-          <NavLink
+          {/* <NavLink
             to="/testCenter"
             className="navbar-item"
             activeClassName="navbar-selected"
             onClick={closeMenu}
           >
             Test center
-          </NavLink>
+          </NavLink> */}
           {/* <NavLink
             to="/howtoplay"
             className="navbar-item"

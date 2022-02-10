@@ -24,6 +24,10 @@ import AppUpload from "./Components/upload/AppUpload";
 import Tutor from "./Components/Tutor/Tutor";
 import TestCenter from "./Components/TestCenter/TestCenter";
 import useLocalStorage from "use-local-storage";
+import { Tutorial } from "./Components/Tutorial/Tutorial";
+import { ConstructSentence } from "./ConstructSentence";
+import QuoteApp from "./Components/DraggableList/MainDraggable";
+// import ConstructSentence from "./Components/Quiz/TestV3/construct_sentence";
 
 function App() {
   const [user, setUser] = useState();
@@ -90,13 +94,6 @@ function App() {
             <Route path="/testCenter">
               <TestCenter />
             </Route>
-            <Route path="/quiz">
-              <Quiz
-                key={quizKey}
-                reset={() => setQuizKey((prevState) => prevState + 1)}
-                user={user}
-              />
-            </Route>
             <Route path="/endscreen">
               <EndScreen user={user} />
             </Route>
@@ -104,8 +101,20 @@ function App() {
               <Scoreboard user={user} />
             </Route>
             <Route path="/test">
-              <Example user={user} />
+              {/* <ConstructSentence user={user} /> */}
+              <QuoteApp />
+            </Route>{" "}
+            <Route path="/tutorial">
+              <Tutorial user={user} />
             </Route>
+            <Route path="/quiz/:isGame">
+              <Quiz
+                key={quizKey}
+                reset={() => setQuizKey((prevState) => prevState + 1)}
+                user={user}
+              />
+            </Route>
+            {/* Tutorial */}
             <Route path="*">
               <NotFound />
             </Route>

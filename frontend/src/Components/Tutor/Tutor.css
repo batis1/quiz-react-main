@@ -161,7 +161,7 @@ nav ul, */
 } */
 @media (max-width: 768px) {
   .tutor-main_content .card-tutor {
-    width: 100%;
+    width: 120%;
     border-radius: 15px;
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import explode from "./explode";
 import Timer from "./../Timer/Timer";
 import EndScreen from "../EndScreen/EndScreen";
@@ -14,6 +14,20 @@ import Replacer from "../../lib/Replacer";
 import { randomSparks } from "./spark";
 import { correctAnimation, wrongAnimation } from "./answerAnimation";
 import AudioPlayer from "../AudioPlayer";
+import { SkillHeaderContainer } from "../SkillHeaderContainer/SkillHeaderContainer";
+import { DropdownOptions } from "../DropdownOptions/DropdownOptions";
+// import { DropdownOptions } from "./DropdownOptions/DropdownOptions";
+import { Typography, Divider, Popover, Button } from "antd";
+import QuoteApp from "../DraggableList/MainDraggable";
+// import { Popover, Button } from "antd";
+const { Title, Paragraph, Text } = Typography;
+
+const content = (
+  <div>
+    <p>ContentContentContentContentContentContentContent</p>
+    <p>ContContentContentContentContentContentContentent</p>
+  </div>
+);
 
 const time = {
   easy: 3000,
@@ -36,7 +50,7 @@ const Quiz = ({ user, reset }) => {
   const [gameState, setGameState] = useState("loading");
   const [score, setScore] = useState(0);
   const [questions, setQuestions] = useState();
-  const [timer, setTimer] = useState(1000 * 60 * 30);
+  const [timer, setTimer] = useState(1000 * 5);
   const [timerState, setTimerState] = useState("idle");
   const [showBomb, setShowBomb] = useState(true);
   const [optionStyles, setOptionStyles] = useState([]);
@@ -44,9 +58,18 @@ const Quiz = ({ user, reset }) => {
   const [scoreUploaded, setScoreUploaded] = useState(false);
   const [mouseClick, setMouseClick] = useState();
   const history = useHistory();
+  const { isGame } = useParams();
 
   const bombRef = useRef();
   const timerRef = useRef();
+
+  const [optionIndex, setOptionIndex] = useState(0);
+
+  const optionsDropdown = [
+    { value: "Reading" },
+    { value: "Listing" },
+    { value: "Writing" },
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -58,9 +81,12 @@ const Quiz = ({ user, reset }) => {
     if (user) {
       console.log(user.dateTime);
       console.log("initial useEffect");
-      if (!questions) {
+      // if (!questions) {
+      if (true) {
         console.log("about to fetch");
-        fetch("http://localhost:5000/questions")
+        fetch(
+          `http://localhost:5000/questions?category=${optionsDropdown[optionIndex].value}`
+        )
           .then((res) => res.json())
           .then((data) => {
             console.log("got data", data);
@@ -73,32 +99,35 @@ const Quiz = ({ user, reset }) => {
           });
       }
     }
-  }, []);
+  }, [optionIndex]);
 
   useEffect(() => {
-    try {
-      const bombPosition = bombRef.current.children[1].getBoundingClientRect();
-      const y =
-        bombPosition.y +
-        bombPosition.height / 2 -
-        window.innerHeight / 2 +
-        window.scrollY -
-        70;
-      randomSparks.tune({ x: 85, y: y });
-      console.log(y);
-      if (timerState === "active") {
-        console.log("spark");
+    if (isGame === "true") {
+      try {
+        const bombPosition =
+          bombRef.current.children[1].getBoundingClientRect();
+        const y =
+          bombPosition.y +
+          bombPosition.height / 2 -
+          window.innerHeight / 2 +
+          window.scrollY -
+          70;
+        randomSparks.tune({ x: 85, y: y });
+        console.log(y);
+        if (timerState === "active") {
+          console.log("spark");
 
-        randomSparks.play();
-      } else {
-        randomSparks.stop();
+          randomSparks.play();
+        } else {
+          randomSparks.stop();
+        }
+      } catch {
+        console.log("caught");
+      } finally {
+        return () => {
+          randomSparks.stop();
+        };
       }
-    } catch {
-      console.log("caught");
-    } finally {
-      return () => {
-        randomSparks.stop();
-      };
     }
   }, [timerState, currQuestion]);
 
@@ -150,36 +179,38 @@ const Quiz = ({ user, reset }) => {
   }, [options]);
 
   useEffect(() => {
-    console.log("in timer useEffect");
-    try {
-      if (timerState === "active") {
-        if (timer === 0) {
-          setTimerState("idle");
-          const bombPosition =
-            bombRef.current.children[1].getBoundingClientRect();
-          const y =
-            10 +
-            bombPosition.y +
-            bombPosition.height / 2 -
-            window.innerHeight / 2 +
-            window.scrollY;
-          // const x = bombPosition.x + bombPosition.width / 2;
-          explode(0, y);
-          setTimeout(() => {
-            setShowBomb(false);
-            setGameState("finished");
-          }, 1000);
-        } else {
+    if (isGame === "true") {
+      console.log("in timer useEffect");
+      try {
+        if (timerState === "active") {
+          if (timer === 0) {
+            setTimerState("idle");
+            const bombPosition =
+              bombRef.current.children[1].getBoundingClientRect();
+            const y =
+              10 +
+              bombPosition.y +
+              bombPosition.height / 2 -
+              window.innerHeight / 2 +
+              window.scrollY;
+            // const x = bombPosition.x + bombPosition.width / 2;
+            explode(0, y);
+            setTimeout(() => {
+              setShowBomb(false);
+              setGameState("finished");
+            }, 1000);
+          } else {
+            clearTimeout(timerRef.current);
+            timerRef.current = setTimeout(() => {
+              setTimer((prevState) => prevState - 100);
+            }, 100);
+          }
+        } else if (timerState === "paused") {
           clearTimeout(timerRef.current);
-          timerRef.current = setTimeout(() => {
-            setTimer((prevState) => prevState - 100);
-          }, 100);
         }
-      } else if (timerState === "paused") {
-        clearTimeout(timerRef.current);
+      } catch {
+        console.log("caught");
       }
-    } catch {
-      console.log("caught");
     }
   }, [timer, timerState]);
 
@@ -237,53 +268,107 @@ const Quiz = ({ user, reset }) => {
     }, 1000);
   };
 
+  // console.log({ isGame });
   return gameState === "loading" ? (
     <Loading />
   ) : (
-    <div ref={bombRef} className="Quiz">
-      {gameState !== "finished" ? (
-        <>
-          <div className="questionWrapper">
-            <p className={`difficulty ${questions[currQuestion]?.difficulty}`}>
-              {questions[currQuestion]?.difficulty}
-            </p>
-            <h1 className="questionTitle">
-              {Replacer(questions[currQuestion]?.question)}
-            </h1>
-          </div>
-          {questions[currQuestion]?.audioUrl && (
-            <AudioPlayer audioUrl={questions[currQuestion]?.audioUrl} />
-          )}
-          <Timer
-            score={score}
-            showBomb={showBomb}
-            time={`00:${Math.floor(timer / 1000)
-              .toString()
-              .padStart(2, "0")}`}
+    <>
+      <div>
+        {isGame === "false" && (
+          <DropdownOptions
+            options={optionsDropdown}
+            setOptionIndex={setOptionIndex}
           />
-          <div className="options">
-            {options &&
-              options.map((option, index) => {
-                return (
-                  <button
-                    style={optionStyles[index]}
-                    onClick={(event) => handleAnswer(event, index)}
-                  >
-                    <img
-                      src={optionImg[index]}
-                      alt="answer"
-                      className="ellipseOption"
-                    />
-                    {Replacer(option)}
-                  </button>
-                );
-              })}
-          </div>
-        </>
-      ) : (
-        <EndScreen user={user} score={score} resetQuiz={reset} />
-      )}
-    </div>
+        )}
+        <SkillHeaderContainer
+          currentQuestion={currQuestion}
+          questionsLength={questions.length}
+        />
+      </div>
+
+      <div ref={bombRef} className="Quiz">
+        {gameState !== "finished" ? (
+          <>
+            <div className="questionWrapper">
+              {isGame === "true" && (
+                <p
+                  className={`difficulty ${questions[currQuestion]?.difficulty}`}
+                >
+                  {questions[currQuestion]?.difficulty}
+                </p>
+              )}
+              <Popover content={content} trigger="hover">
+                <Text
+                  className="questionTitle"
+                  style={{ fontSize: "xx-large" }}
+                >
+                  {Replacer(questions[currQuestion]?.question)}
+                </Text>
+              </Popover>
+
+              {/* <h1 className="questionTitle">
+                {Replacer(questions[currQuestion]?.question)}
+              </h1> */}
+            </div>
+            {questions[currQuestion]?.audioUrl && (
+              <AudioPlayer audioUrl={questions[currQuestion]?.audioUrl} />
+            )}
+            {isGame === "true" && (
+              <Timer
+                score={score}
+                showBomb={showBomb}
+                time={`00:${Math.floor(timer / 1000)
+                  .toString()
+                  .padStart(2, "0")}`}
+              />
+            )}
+            {optionsDropdown[optionIndex].value === "Writing" ? (
+              <QuoteApp />
+            ) : (
+              <div className="options">
+                {options &&
+                  options.map((option, index) => {
+                    return (
+                      <button
+                        style={optionStyles[index]}
+                        onClick={(event) => handleAnswer(event, index)}
+                      >
+                        <img
+                          src={optionImg[index]}
+                          alt="answer"
+                          className="ellipseOption"
+                        />
+                        {Replacer(option)}
+                      </button>
+                    );
+                  })}
+              </div>
+            )}
+            {/* <QuoteApp /> */}
+            {/* <div className="options">
+              {options &&
+                options.map((option, index) => {
+                  return (
+                    <button
+                      style={optionStyles[index]}
+                      onClick={(event) => handleAnswer(event, index)}
+                    >
+                      <img
+                        src={optionImg[index]}
+                        alt="answer"
+                        className="ellipseOption"
+                      />
+                      {Replacer(option)}
+                    </button>
+                  );
+                })}
+            </div> */}
+          </>
+        ) : (
+          <EndScreen user={user} score={score} resetQuiz={reset} />
+        )}
+      </div>
+    </>
   );
 };
 
