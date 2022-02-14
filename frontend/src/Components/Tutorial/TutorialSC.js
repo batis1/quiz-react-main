@@ -46,7 +46,9 @@ export const MainWrapper = styled.div`
   }
 
   .course-image-span-container {
-    background: #ce82ff;
+    /* background: #ce82ff; */
+    background: var(--darkerOrange);
+
     position: relative;
     height: 72px;
     width: 72px;
@@ -109,14 +111,15 @@ export const SkillModalSC = styled.div`
   -ms-transform-origin: center top;
   transform-origin: center top;
   z-index: 201;
-  background: #ce82ff;
+  /* background: #ce82ff; */
+  background: var(--darkerOrange);
   min-width: 200px;
   position: absolute;
   border-radius: 16px;
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
 
   &::after {
-    border-bottom: 10px solid #ce82ff !important;
+    border-bottom: 10px solid var(--darkerOrange) !important;
     left: 50% !important;
     top: -20px;
     -ms-transform: translateX(-50%);
@@ -140,7 +143,8 @@ export const SkillModalSC = styled.div`
     outline: none;
   }
   .skm-start-btn {
-    color: #ce82ff;
+    /* color: #ce82ff; */
+    color: var(--darkerOrange);
     border-width: 0 0 4px;
     padding: 13px 16px;
     font-size: 15px;

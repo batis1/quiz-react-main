@@ -16,7 +16,7 @@ const Logo = ({ size, type }) => {
       <h3
         style={{
           color: "var(--darkerOrange)",
-          marginLeft: "60px",
+          marginLeft: "70px",
           marginTop: "25px",
           fontWeight: "bold",
           fontSize: "30px",

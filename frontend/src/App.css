@@ -28,7 +28,7 @@ font-family: 'Roboto Mono', monospace; - for bomb countdown
 
 [data-theme="light"] {
   --lightAccent: #363537; /* white */
-  --darkAccent: #dbd5d5; /* jet */
+  --darkAccent: #fff; /* jet */
   --redAccent: #bf211e; /* venetian red */
   --orangeAccent: #ff8c42; /* mango tango */
   --yellowAccent: #e9ce2c; /* safety yellow */
@@ -48,7 +48,15 @@ font-family: 'Roboto Mono', monospace; - for bomb countdown
   --darkerOrange: #e67329; /* darker orange for hover */
 }
 /*----- Global Styles -----*/
+.ant-btn-primary {
+  background: var(--greyAccent);
+  /* border-color: #yourColor; */
+}
 
+.ant-btn-primary:hover {
+  background: var(--darkerOrange);
+  /* border-color: #yourColor; */
+}
 .theme-toggle i {
   font-size: 2rem;
   cursor: pointer;
@@ -61,7 +69,7 @@ body {
   margin: 0;
   line-height: 1.4;
   font-family: "Poppins", sans-serif;
-  background: var(--darkAccent);
+  background-color: var(--darkAccent);
   /* background-image: url("bkgroundbomb.svg"); */
   background-repeat: no-repeat;
   background-position-y: 35%;
@@ -173,11 +181,14 @@ h3 {
 
 .content {
   width: 90%;
-  height: 85vh; /*calc(100vh - 80px);*/
+  height: 85vh;
   margin: 0 auto;
   padding: 2em 0;
 }
 
+.height-auto {
+  height: auto !important;
+}
 /* ----- Forms ----- */
 
 .form-label {

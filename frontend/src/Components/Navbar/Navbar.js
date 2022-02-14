@@ -30,9 +30,9 @@ const Navbar = ({ user, setUser }) => {
   const handleToggle = () => setMenuOpen((prev) => !prev);
   const closeMenu = () => setMenuOpen(false);
   const options = [
-    { value: "Game", to: "/quiz/true" },
-    { value: "Tutorial", to: "/tutorial" },
-    { value: "Words saved", to: "" },
+    { value: "GAME", to: "/quiz" },
+    { value: "TUTORIAL", to: "/tutorial" },
+    { value: "SAVED WORDS", to: "" },
   ];
   return (
     <header>
@@ -140,7 +140,8 @@ const Navbar = ({ user, setUser }) => {
             activeClassName="navbar-selected"
             onClick={closeMenu}
           >
-            How to play
+            {/* How to play */}
+            GUIDES
           </NavLink>
 
           {!user ? (

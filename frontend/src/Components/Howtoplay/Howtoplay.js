@@ -8,9 +8,20 @@ import rule4 from "../../images/rule4.svg";
 const Howtoplay = () => {
   return (
     <div className="howtoplay-page">
-      <h1 className="header">How to play</h1>
+      <h1 className="header">How to use this platform</h1>
       <div className="rules">
         <div className="rule-container">
+          <div className="number-container">
+            <img src={rule1} width="50px" alt="rule number indicator" />
+          </div>
+
+          <div>
+            <p className="rule">
+              Follow the tutorial's lessons and complete the exercises.
+            </p>
+          </div>
+        </div>
+        {/* <div className="rule-container">
           <div className="number-container">
             <img src={rule1} width="50px" alt="rule number indicator" />
           </div>
@@ -20,7 +31,7 @@ const Howtoplay = () => {
               Answer as many questions as you can in the time allowed.
             </p>
           </div>
-        </div>
+        </div> */}
 
         <div className="rule-container">
           <div className="number-container">
@@ -28,8 +39,9 @@ const Howtoplay = () => {
           </div>
           <div>
             <p className="rule">
-              Answer a question correctly to add more time to the bomb. The
-              harder the question, the more time you get.
+              Begin the game by answering as many questions as you can, and each
+              correct answer adds more time to the bomb. The more difficult the
+              question, the more time you have.
             </p>
           </div>
         </div>

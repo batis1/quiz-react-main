@@ -101,13 +101,16 @@ router.get("/", async (req, res) => {
   //   }
   //   res.send(questionList);
   // });
-  const { category } = req.query;
+  const { category, level } = req.query;
   const queryObject = {};
 
   if (category) {
     queryObject.category = category;
   }
 
+  if (level) {
+    queryObject.level = level;
+  }
   const docs = await Question.find(queryObject);
 
   res.send(docs);

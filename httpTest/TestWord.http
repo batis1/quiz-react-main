@@ -1,0 +1,33 @@
+@url = http://localhost:5000/words
+
+@lessonUrl = http://localhost:5000/lessons
+
+POST {{lessonUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "title":"Greetings",
+    "iconName":"grtngs"
+}
+
+
+###
+
+POST {{url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "character":"的",
+    "pinyin":"de",
+    "englishTranslation":"'s",
+    "sentence":"我的猫",
+    "lessonId":"620a893de3dfc8194003fc6a"
+}
+
+###
+GET {{url}}?lessonId=620a893de3dfc8194003fc6a
+
+###
+
+GET {{lessonUrl}}
+

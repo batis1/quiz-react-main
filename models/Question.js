@@ -7,7 +7,10 @@ const questionSchema = new mongoose.Schema({
   question: String,
   correct_answer: String,
   incorrect_answers: Array,
-audioUrl: String,
+  audioUrl: String,
+  level: String,
+  audioDescription: String,
+  popupDescription: { pinyin: String, translation: String },
 });
 
 const Question = mongoose.model("Questions", questionSchema);

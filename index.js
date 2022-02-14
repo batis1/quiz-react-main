@@ -6,6 +6,9 @@ const { connect } = require("./db/connection");
 const questionRouter = require("./routes/questionRouter");
 const scoreRouter = require("./routes/scoreRouter");
 const userRouter = require("./routes/user");
+const wordRouter = require("./routes/wordRoute");
+const lessonRouter = require("./routes/lessonsRoute");
+
 const path = require("path");
 const morgan = require("morgan");
 const fileUpload = require("express-fileupload");
@@ -52,6 +55,8 @@ app.post("/upload", (req, res) => {
 app.use("/user", userRouter);
 app.use("/score", scoreRouter);
 app.use("/questions", questionRouter);
+app.use("/words", wordRouter);
+app.use("/lessons", lessonRouter);
 
 // const PORT = process.env.PORT || 5000;
 const PORT = 5000;

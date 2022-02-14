@@ -4,7 +4,7 @@ import { MainWrapper, SkillProgressGreen } from "./SkillHeaderContainerSC";
 export const SkillHeaderContainer = ({ questionsLength, currentQuestion }) => {
   useEffect(() => {
     console.log(
-      `${Number((currentQuestion / questionsLength) * 100).toFixed(0)}%`
+      `${Number(((currentQuestion + 1) / questionsLength) * 100).toFixed(0)}%`
     );
     console.log({ questionsLength, currentQuestion });
   }, [currentQuestion]);

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { actions, GlobalContext } from "../../App";
 
 export const DropdownOptions = ({ className, options, setOptionIndex }) => {
   const [currentOptionIndex, setCurrentOptionIndex] = useState(0);
@@ -10,6 +11,8 @@ export const DropdownOptions = ({ className, options, setOptionIndex }) => {
   useEffect(() => {
     setOptionIndex && setOptionIndex(currentOptionIndex);
   }, [currentOptionIndex]);
+
+  const { state, dispatch } = useContext(GlobalContext);
 
   return (
     <div
@@ -24,7 +27,13 @@ export const DropdownOptions = ({ className, options, setOptionIndex }) => {
                 <Link to={to}>
                   <Menu.Item
                     key={index}
-                    onClick={() => setCurrentOptionIndex(index)}
+                    onClick={() => {
+                      dispatch({
+                        type: actions.SET_IS_GAME_SET_LEVEL,
+                        payload: { level: "", isGame: true },
+                      });
+                      setCurrentOptionIndex(index);
+                    }}
                   >
                     {value}
                   </Menu.Item>

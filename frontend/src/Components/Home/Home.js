@@ -7,6 +7,7 @@ import imageex from "../../images/imageex.svg";
 // import hero from "../../images/hero.svg";
 import hero from "../../images/HomeHsk1.png";
 import { ButtonOptions } from "../ButtonOptions";
+import { Switch } from "antd";
 
 const Home = (props) => {
   const history = useHistory();
@@ -21,10 +22,19 @@ const Home = (props) => {
       <div className="Home">
         <div className="container1">
           <div className="hometitle-container">
-            <h1 className="hometitle">DO YOU WANT TO PRACTICE HSK 4?</h1>
-            <p className="homesubtitle">
+            {/* <h1 className="hometitle">DO YOU WANT TO PRACTICE HSK 4?</h1>
+             */}
+            <h1 className="hometitle">
+              Are you planning to take Chinese HSK 4 exam?
+            </h1>
+
+            {/* <p className="homesubtitle">
               Test your HSK 4 knowledge skills against the clock to climb the
               leaderboard. But take your time and it's tick tick BOOM!
+            </p> */}
+            <p className="homesubtitle">
+              Begin your preparation by following the tutorial, and then put
+              your knowledge to the test by playing the game.
             </p>
           </div>
 
@@ -41,7 +51,8 @@ const Home = (props) => {
                   onClick={() => history.push("/Howtoplay")}
                   className="btn homebtn white"
                 >
-                  HOW TO USE IT
+                  {/* HOW TO PLAY */}
+                  GUIDES
                 </button>
               </div>
             ) : (
@@ -66,8 +77,13 @@ const Home = (props) => {
 
         <div className="imagecontainer">
           <div className="theme-toggle">
+            <Switch
+              defaultChecked
+              onChange={switchTheme}
+              style={{ background: "#e67329" }}
+            />
             {/* <h2>{props.theme === "light" ? "Light" : "Dark"} Theme</h2> */}
-            <i onClick={switchTheme} class="fas fa-toggle-on"></i>
+            {/* <i onClick={switchTheme} class="fas fa-toggle-on"></i> */}
           </div>
           <div>
             <img src={imageex} className="imageex" alt="imageex" width="400" />

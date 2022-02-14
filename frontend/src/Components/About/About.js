@@ -4,15 +4,27 @@ const About = () => {
   return (
     <div className="container">
       <h1>About</h1>
-      <p className="app-about">
+      {/* <p className="app-about">
         Knowledge Bomb is a general knowledge quiz designed to test the user's
         skills against the clock. Answer 10 questions before the timer ends and
         the bomb explodes.
-      </p>
+      </p> */}
       <p className="app-about">
+        HSK4 EXAM PRE is a platform that provides users who are planning to take
+        the HSK 4 exam with lessons and exercises, as well as a way to compete
+        with others in their knowledge of hsk 4 questions.
+      </p>
+      {/* <p className="app-about">
         The questions could be either multiple choice or true or false. The more
         answers you get right, the more time you have and the higher your score.
         But run out of time and it is game over!
+      </p> */}
+      <p className="app-about">
+        The questions are all from previous exams, and they are divided into
+        three sections: reading, listening, and writing. It also includes a game
+        in which the user is asked random questions to test his knowledge. The
+        more correct answers you have, the more time you have and the higher
+        your score. But if you run out of time, the game is over!
       </p>
 
       {/* <h2 className="team-header">Meet the team</h2> */}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import explode from "./explode";
 import Timer from "./../Timer/Timer";
@@ -19,6 +19,7 @@ import { DropdownOptions } from "../DropdownOptions/DropdownOptions";
 // import { DropdownOptions } from "./DropdownOptions/DropdownOptions";
 import { Typography, Divider, Popover, Button } from "antd";
 import QuoteApp from "../DraggableList/MainDraggable";
+import { actions, GlobalContext } from "../../App";
 // import { Popover, Button } from "antd";
 const { Title, Paragraph, Text } = Typography;
 
@@ -28,7 +29,6 @@ const content = (
     <p>ContContentContentContentContentContentContentent</p>
   </div>
 );
-
 const time = {
   easy: 3000,
   medium: 5000,
@@ -42,6 +42,7 @@ const points = {
 
 const optionImg = [Aellipse, Bellipse, Cellipse, Dellipse];
 
+
 const Quiz = ({ user, reset }) => {
   const [currQuestion, setCurrQuestion] = useState(0);
   const [optionChosen, setOptionChosen] = useState();
@@ -50,7 +51,7 @@ const Quiz = ({ user, reset }) => {
   const [gameState, setGameState] = useState("loading");
   const [score, setScore] = useState(0);
   const [questions, setQuestions] = useState();
-  const [timer, setTimer] = useState(1000 * 5);
+  const [timer, setTimer] = useState(1000 * 60 * 30);
   const [timerState, setTimerState] = useState("idle");
   const [showBomb, setShowBomb] = useState(true);
   const [optionStyles, setOptionStyles] = useState([]);
@@ -58,7 +59,13 @@ const Quiz = ({ user, reset }) => {
   const [scoreUploaded, setScoreUploaded] = useState(false);
   const [mouseClick, setMouseClick] = useState();
   const history = useHistory();
-  const { isGame } = useParams();
+  // const { isGame } = useParams();
+  const {
+    state: { isGame, level },
+    dispatch,
+  } = useContext(GlobalContext);
+
+  console.log({ isGame });
 
   const bombRef = useRef();
   const timerRef = useRef();
@@ -85,7 +92,7 @@ const Quiz = ({ user, reset }) => {
       if (true) {
         console.log("about to fetch");
         fetch(
-          `http://localhost:5000/questions?category=${optionsDropdown[optionIndex].value}`
+          `http://localhost:5000/questions?category=${optionsDropdown[optionIndex].value}&level=${level}`
         )
           .then((res) => res.json())
           .then((data) => {
@@ -93,6 +100,7 @@ const Quiz = ({ user, reset }) => {
             setQuestions(data);
             setGameState("active");
             setTimerState("active");
+            setCurrQuestion(0);
           })
           .catch((e) => {
             console.log(e);
@@ -102,7 +110,8 @@ const Quiz = ({ user, reset }) => {
   }, [optionIndex]);
 
   useEffect(() => {
-    if (isGame === "true") {
+    // if (isGame === "true") {
+    if (isGame) {
       try {
         const bombPosition =
           bombRef.current.children[1].getBoundingClientRect();
@@ -179,7 +188,8 @@ const Quiz = ({ user, reset }) => {
   }, [options]);
 
   useEffect(() => {
-    if (isGame === "true") {
+    // if (isGame === "true") {
+    if (isGame) {
       console.log("in timer useEffect");
       try {
         if (timerState === "active") {
@@ -219,6 +229,8 @@ const Quiz = ({ user, reset }) => {
     if (gameState === "active" && optionChosen !== undefined) {
       console.log("**********");
 
+      console.log(time[questions[currQuestion].difficulty]);
+      console.log(questions[currQuestion].difficulty);
       if (optionChosen === correctAnswerIndex) {
         setScore(
           (prevState) => prevState + points[questions[currQuestion].difficulty]
@@ -228,22 +240,61 @@ const Quiz = ({ user, reset }) => {
         );
       }
       setOptionChosen(null);
-      setCurrQuestion(currQuestion + 1);
+
+      console.log({
+        length: questions.length,
+        cureentQ: questions[currQuestion],
+        cureentnext: questions[currQuestion + 1],
+      });
+
+      if (questions[currQuestion + 1]) setCurrQuestion(currQuestion + 1);
+      else setGameState("finished");
       setAnswerProcessed(true);
     }
   }, [optionChosen, gameState]);
 
-  const handleAnswer = (event, answerIndex) => {
+  // const [correctOrder, setCorrectOrder] = useState(false);
+
+  const handleAnswer = (event, answerIndex, isCorrectOrder) => {
     console.log("handle answer");
     setTimerState("paused");
     setGameState("paused");
     // highlight chosen answer
     // fade incorrect answers
+    console.log("correct answer🎈🎈🎈🎈");
+
+    console.log({ isCorrectOrder, pageX: event.offsetTop });
+    if (isCorrectOrder !== undefined) {
+      if (isCorrectOrder) {
+        const checkAnimation = correctAnimation({
+          x: event.offsetTop - window.innerWidth / 2 + 400,
+          y: event.offsetTop - window.innerHeight / 2,
+        });
+        checkAnimation.play();
+      } else {
+        const crossAnimation = wrongAnimation({
+          x: event.offsetTop - window.innerWidth / 2 + 400,
+          y: event.offsetTop - window.innerHeight / 2,
+        });
+        crossAnimation.play();
+
+        setTimeout(() => {
+          console.log("order correct answer if the user didn't find it");
+          console.log(questions[currQuestion].correct_answer);
+        }, 5000);
+      }
+    }
+
     if (answerIndex == correctAnswerIndex) {
       const checkAnimation = correctAnimation({
         x: event.pageX - window.innerWidth / 2,
         y: event.pageY - window.innerHeight / 2,
       });
+
+      // const checkAnimation = correctAnimation({
+      //   x: window.innerWidth / 2,
+      //   y: window.innerHeight / 2,
+      // });
       checkAnimation.play();
     } else {
       const crossAnimation = wrongAnimation({
@@ -258,62 +309,108 @@ const Quiz = ({ user, reset }) => {
       }))
     );
 
-    setTimeout(() => {
-      // update option chosen
-      console.log("Runnin handle answer settimeout", { answerIndex });
-      console.log({ optionChosen });
-      setOptionChosen(answerIndex);
-      setTimerState("active");
-      setGameState("active");
-    }, 1000);
+    setTimeout(
+      () => {
+        // update option chosen
+        console.log("Runnin handle answer settimeout", { answerIndex });
+        console.log({ optionChosen });
+        setOptionChosen(answerIndex);
+        setTimerState("active");
+        setGameState("active");
+      },
+      isCorrectOrder === undefined ? 1000 : 5000
+    );
   };
 
   // console.log({ isGame });
   return gameState === "loading" ? (
+    // return true ? (
     <Loading />
   ) : (
     <>
       <div>
-        {isGame === "false" && (
-          <DropdownOptions
-            options={optionsDropdown}
-            setOptionIndex={setOptionIndex}
-          />
+        {/* isGame === "false" */}
+        {!isGame && gameState !== "finished" && (
+          <div>
+            <DropdownOptions
+              options={optionsDropdown}
+              setOptionIndex={setOptionIndex}
+            />
+            <SkillHeaderContainer
+              currentQuestion={currQuestion}
+              questionsLength={questions.length}
+            />
+          </div>
         )}
-        <SkillHeaderContainer
-          currentQuestion={currQuestion}
-          questionsLength={questions.length}
-        />
       </div>
 
-      <div ref={bombRef} className="Quiz">
+      <div
+        ref={bombRef}
+        className="Quiz "
+        style={
+          gameState !== "finished" &&
+          questions[currQuestion]?.type !== "question order" &&
+          !questions[currQuestion]?.audioUrl
+            ? { height: "55.5vh" }
+            : {}
+        }
+      >
         {gameState !== "finished" ? (
           <>
             <div className="questionWrapper">
-              {isGame === "true" && (
+              {isGame && (
                 <p
                   className={`difficulty ${questions[currQuestion]?.difficulty}`}
                 >
                   {questions[currQuestion]?.difficulty}
                 </p>
               )}
-              <Popover content={content} trigger="hover">
+
+              {questions[currQuestion]?.type !== "question order" ? (
+                <Popover
+                  content={
+                    <div>
+                      <p>
+                        {questions[currQuestion]?.popupDescription &&
+                          questions[currQuestion]?.popupDescription.pinyin}
+                      </p>
+                      <p>
+                        {questions[currQuestion]?.popupDescription &&
+                          questions[currQuestion]?.popupDescription.translation}
+                      </p>
+                      {/* <p>ContContentContentContentContentContentContentent</p> */}
+                    </div>
+                  }
+                  trigger="hover"
+                >
+                  <Text
+                    className="questionTitle"
+                    style={{ fontSize: "xx-large" }}
+                  >
+                    {Replacer(questions[currQuestion]?.question)}
+                  </Text>
+                </Popover>
+              ) : (
                 <Text
                   className="questionTitle"
                   style={{ fontSize: "xx-large" }}
                 >
-                  {Replacer(questions[currQuestion]?.question)}
+                  {/* {Replacer(questions[currQuestion]?.question)} */}
+                  Order words:
                 </Text>
-              </Popover>
+              )}
 
               {/* <h1 className="questionTitle">
                 {Replacer(questions[currQuestion]?.question)}
               </h1> */}
             </div>
             {questions[currQuestion]?.audioUrl && (
-              <AudioPlayer audioUrl={questions[currQuestion]?.audioUrl} />
+              <AudioPlayer
+                audioUrl={questions[currQuestion]?.audioUrl}
+                audioDescription={questions[currQuestion]?.audioDescription}
+              />
             )}
-            {isGame === "true" && (
+            {isGame && (
               <Timer
                 score={score}
                 showBomb={showBomb}
@@ -323,7 +420,15 @@ const Quiz = ({ user, reset }) => {
               />
             )}
             {optionsDropdown[optionIndex].value === "Writing" ? (
-              <QuoteApp />
+              <QuoteApp
+                question={questions[currQuestion]?.question}
+                correct_answer={questions[currQuestion]?.correct_answer}
+                setCurrQuestion={setCurrQuestion}
+                currQuestion={currQuestion}
+                setGameState={setGameState}
+                questions={questions}
+                handleAnswer={handleAnswer}
+              />
             ) : (
               <div className="options">
                 {options &&
@@ -365,7 +470,12 @@ const Quiz = ({ user, reset }) => {
             </div> */}
           </>
         ) : (
-          <EndScreen user={user} score={score} resetQuiz={reset} />
+          <EndScreen
+            user={user}
+            score={score}
+            resetQuiz={reset}
+            isGame={isGame}
+          />
         )}
       </div>
     </>

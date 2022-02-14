@@ -11,9 +11,15 @@ import { Tutorial } from "./Tutorial/Tutorial";
 import "antd/dist/antd.css";
 import { Link, useHistory } from "react-router-dom";
 import { DropdownOptions } from "./DropdownOptions/DropdownOptions";
-import { Typography, Divider, Popover, Button } from "antd";
+import { Typography, Divider, Popover, Button, Badge } from "antd";
+import { WritingSecondQ } from "./WritingSecondQ";
+import { Switch } from "antd";
+import { Space, Input } from "antd";
+import BIRDS from "vanta/dist/vanta.dots.min.js";
 // import { Popover, Button } from "antd";
-
+import { Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { WordsTable } from "./WordsTable";
 const content = (
   <div>
     <p>Content</p>
@@ -23,12 +29,14 @@ const content = (
 
 const { Title, Paragraph, Text } = Typography;
 
-const Example = () => {
+const Test = () => {
   const blockContent = `AntV 是蚂蚁金服全新一代数据可视化解决方案，致力于提供一套简单方便、专业可靠、不限可能的数据可视化最佳实践。得益于丰富的业务场景和用户需求挑战，AntV 经历多年积累与不断打磨，已支撑整个阿里集团内外 20000+ 业务系统，通过了日均千万级 UV 产品的严苛考验。
 我们正在基础图表，图分析，图编辑，地理空间可视化，智能可视化等各个可视化的领域耕耘，欢迎同路人一起前行。`;
 
   const player = useRef(null);
   const [playing, setPlaying] = useState(false);
+  const [vantaEffect, setVantaEffect] = useState(0);
+  const myRef = useRef(null);
   const [playerState, setPlayerState] = useState({
     played: 0,
     loaded: 0,
@@ -64,7 +72,19 @@ const Example = () => {
       }
     })();
   }, []);
-
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        BIRDS({
+          el: myRef.current,
+        })
+      );
+    }
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
   return (
     // <div
     //   style={{
@@ -75,15 +95,25 @@ const Example = () => {
     //   }}
     // >
     <>
+      <div ref={myRef} style={{ height: "100vh" }}>
+        Foreground content goes here
+      </div>
       {/* <DropdownOptions options={options} />
       <SkillHeaderContainer /> */}
 
-      <Popover content={content} title="Title" trigger="hover">
+      {/* <Popover content={content} title="Title" trigger="hover">
         <Text>你的爱好是什么?</Text>
-      </Popover>
+      </Popover> */}
+      {/* <WritingSecondQ />
+      <Badge
+        count={show ? 25 : 0}
+        style={{ background: "yellow", color: "black" }}
+      /> */}
+      {/* <Switch defaultChecked onChange={""} /> */}
+      {/* <WordsTable /> */}
+      {/* <WritingSecondQ /> */}
     </>
-    // </div>
   );
 };
 
-export default Example;
+export default Test;
