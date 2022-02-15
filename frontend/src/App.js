@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useRef } from "react";
 import "antd/dist/antd.css";
 import "./App.css";
 import "./Components/Quiz/Quiz.css";
@@ -27,21 +27,29 @@ import useLocalStorage from "use-local-storage";
 import { Tutorial } from "./Components/Tutorial/Tutorial";
 import QuoteApp from "./Components/DraggableList/MainDraggable";
 import Test from "./Components/Test";
-// import ConstructSentence from "./Components/Quiz/TestV3/construct_sentence";
-// import BIRDS from "vanta/dist/vanta.rings.min.js";
+import BIRDS from "vanta/dist/vanta.birds.min.js";
+import { WordsTable } from "./Components/WordsTable";
 export const GlobalContext = React.createContext();
 
-export const actions = { SET_IS_GAME_SET_LEVEL: "SetIsGameSetLevel" };
+export const actions = {
+  SET_LESSON_PARAMS: "SET_LESSON_PARAMS",
+  SET_USER: "SET_USER",
+};
 
-const initialState = { isGame: true, level: "" };
-const reducer = (state, { type, payload: { level, isGame } }) => {
+const initialState = { isGame: true, level: "", lessonId: "", user: null };
+const reducer = (
+  state,
+  { type, payload: { level, isGame, lessonId, user } }
+) => {
   switch (type) {
-    case actions.SET_IS_GAME_SET_LEVEL:
+    case actions.SET_LESSON_PARAMS:
       console.log("in Toggle is game");
       console.log({ level, isGame });
-      return { ...state, isGame, level };
+      return { ...state, isGame, level, lessonId };
     // return { ...state, isGame: true };
 
+    case actions.SET_USER:
+      return { ...state, user };
     default:
       return state;
   }
@@ -51,21 +59,11 @@ function App() {
   const [user, setUser] = useState();
   const [quizKey, setQuizKey] = useState(1);
   const [state, dispatch] = useReducer(reducer, initialState);
-  // const [vantaEffect, setVantaEffect] = useState(0);
-  // const myRef = useRef(null);
-  // const [darkMode, setDarkMode] = useState(false);
-  // useEffect(() => {
-  //   if (!vantaEffect) {
-  //     setVantaEffect(
-  //       BIRDS({
-  //         el: myRef.current,
-  //       })
-  //     );
-  //   }
-  //   return () => {
-  //     if (vantaEffect) vantaEffect.destroy();
-  //   };
-  // }, [vantaEffect]);
+
+  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useLocalStorage("theme" ? "dark" : "light");
+  const [isThemeChange, setIsThemeChange] = useState(false);
+
   useEffect(() => {
     // get user from session storage
     // if user check timestamp
@@ -80,6 +78,7 @@ function App() {
         if (valid) {
           console.log("setting current user");
           setUser(currentUser);
+          dispatch({ type: actions.SET_USER, payload: { user: currentUser } });
         } else {
           setUser(null);
           console.log("deleting user from storage");
@@ -97,14 +96,88 @@ function App() {
     }, 5000);
   });
 
-  const [theme, setTheme] = useLocalStorage("theme" ? "dark" : "light");
+  useEffect(() => {
+    console.log({ vantaEffect, theme });
+    if (theme === "light") {
+      if (isThemeChange) {
+        console.log("light herec");
+        setVantaEffect(
+          BIRDS({
+            el: myRef.current,
+            color1: 0xabadcd,
+            color2: 0xded7d2,
+            backgroundColor: 0xe6e6e6,
+            //and so on...
+          })
+        );
+        setIsThemeChange(false);
+      }
+    } else if (theme === "dark") {
+      if (isThemeChange) {
+        console.log("light dark");
+
+        setVantaEffect(
+          BIRDS({
+            el: myRef.current,
+            color1: 0xabadcd,
+            color2: 0xded7d2,
+            backgroundColor: 0x161515,
+            //and so on...
+          })
+        );
+        setIsThemeChange(false);
+      }
+    }
+
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [isThemeChange]);
 
   const { pathname } = useLocation();
   console.log({ pathname });
+  const [vantaEffect, setVantaEffect] = useState(0);
+  const myRef = useRef(null);
+  useEffect(() => {
+    console.log({ vantaEffect, theme });
+    if (theme === "light") {
+      if (isThemeChange && !vantaEffect) {
+        console.log("light herec");
+        setVantaEffect(
+          BIRDS({
+            el: myRef.current,
+            color1: 0xabadcd,
+            color2: 0xded7d2,
+            backgroundColor: 0xe6e6e6,
+            //and so on...
+          })
+        );
+      }
+    } else if (theme === "dark") {
+      if (!vantaEffect) {
+        console.log("light dark");
+
+        setVantaEffect(
+          BIRDS({
+            el: myRef.current,
+            color1: 0xabadcd,
+            color2: 0xded7d2,
+            backgroundColor: 0x161515,
+            //and so on...
+          })
+        );
+      }
+    }
+
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
+
   return (
     // <Router>
     <GlobalContext.Provider value={{ state, dispatch }}>
-      <div className={`app`} data-theme={theme}>
+      <div className={`app`} data-theme={theme} ref={myRef}>
         <Navbar user={user} setUser={setUser} />
         <div
           className={`content ${
@@ -113,7 +186,12 @@ function App() {
         >
           <Switch>
             <Route exact path="/">
-              <Home user={user} theme={theme} setTheme={setTheme} />
+              <Home
+                user={user}
+                theme={theme}
+                setTheme={setTheme}
+                setIsThemeChange={setIsThemeChange}
+              />
             </Route>
             <Route path="/signup">
               <Signup user={user} setUser={setUser} />
@@ -141,11 +219,14 @@ function App() {
             </Route>
             <Route path="/test">
               {/* <ConstructSentence user={user} /> */}
-              <Test />
+              <Test theme={theme} setTheme={setTheme} />
               {/* <QuoteApp /> */}
             </Route>{" "}
             <Route path="/tutorial">
               <Tutorial user={user} />
+            </Route>
+            <Route path="/lesson">
+              <WordsTable user={user} />
             </Route>
             <Route path="/quiz">
               <Quiz

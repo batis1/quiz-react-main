@@ -29,7 +29,7 @@ export const DropdownOptions = ({ className, options, setOptionIndex }) => {
                     key={index}
                     onClick={() => {
                       dispatch({
-                        type: actions.SET_IS_GAME_SET_LEVEL,
+                        type: actions.SET_LESSON_PARAMS,
                         payload: { level: "", isGame: true },
                       });
                       setCurrentOptionIndex(index);

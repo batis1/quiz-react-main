@@ -1,12 +1,31 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const { Word } = require("../models/WordModel");
+const { User } = require("../models/User");
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { lessonId } = req.query;
+  const { lessonId, userId } = req.query;
   const objectQuery = {};
+
+  if (userId) {
+    const user = await User.findById(userId);
+    console.log({ user });
+    const words = [];
+
+    for (let index = 0; index < user.savedWords.length; index++) {
+      const wordId = user.savedWords[index];
+      console.log({ wordId });
+      const word = await Word.findById(wordId);
+
+      words.push(word);
+    }
+    res.send({ docs: words });
+
+    return;
+  }
+
   if (lessonId) {
     objectQuery.lessonId = lessonId;
   }

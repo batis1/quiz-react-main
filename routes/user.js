@@ -3,7 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const { User } = require("../models/User");
 const { response } = require("express");
-const  router = express.Router();
+const router = express.Router();
 
 router.post("/signup", (req, res) => {
   const newUser = req.body;
@@ -23,6 +23,7 @@ router.post("/signup", (req, res) => {
         email: req.body.email,
         password: hash,
         avatar: imgBin,
+        savedWords: req.body.username,
       })
         .then((userRecord) => {
           res.status(200).send({
@@ -30,7 +31,6 @@ router.post("/signup", (req, res) => {
             success: true,
             user: createClientUser(userRecord),
           });
-        
         })
         .catch((err) => {
           console.log("Error", err);
@@ -39,7 +39,6 @@ router.post("/signup", (req, res) => {
             .send({ message: "Account Error", success: false, err });
         });
     } else {
-      
       console.log("Error", err);
       res.status(500).send({ message: "Unable to hash", success: false, err });
     }
@@ -64,6 +63,14 @@ router.post("/login", (req, res) => {
       });
     }
   });
+});
+router.put("/:id", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  console.log({ user, savedWords: req.body.savedWords });
+  user.savedWords = req.body.savedWords ? req.body.savedWords : user.savedWords;
+
+  await user.save();
+  res.send({ message: "user update successfully" });
 });
 
 router.get("/:id", (req, res) => {

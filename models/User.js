@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   avatar: Buffer,
-  savedWords:{type:[mongoose.Types.ObjectID], ref:"Word" }
+  savedWords: { type: [String], ref: "Word" },
 });
 
 const User = mongoose.model("Users", UserSchema);

@@ -15,6 +15,7 @@ const Home = (props) => {
   const switchTheme = () => {
     const newTheme = props.theme === "light" ? "dark" : "light";
     props.setTheme(newTheme);
+    props.setIsThemeChange(true);
   };
 
   return (

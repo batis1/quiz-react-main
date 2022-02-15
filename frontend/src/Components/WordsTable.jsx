@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Table, Button, Space, Input } from "antd";
+
 import { SearchOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { GlobalContext } from "../App";
+import Loading from "./Loading/Loading";
+import useLocalStorage from "use-local-storage";
+import { useHistory } from "react-router-dom";
 
 export const WordsTable = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [dataSource, setDataSource] = useState([
     {
       Character: "你好",
@@ -65,10 +72,68 @@ export const WordsTable = () => {
       Sentence: "老师，你好",
     },
   ]);
+
+  const {
+    state: { lessonId, user },
+    dispatch,
+  } = useContext(GlobalContext);
+
+  const [userLocal, setUser] = useLocalStorage("user", user);
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      let apiUrl = "http://localhost:5000/words";
+      if (lessonId) {
+        apiUrl = `${apiUrl}?lessonId=${lessonId}`;
+      } else {
+        apiUrl = `${apiUrl}?userId=${user._id}`;
+      }
+
+      const {
+        data: { docs },
+      } = await axios.get(apiUrl);
+      setIsLoading(false);
+
+      // setDataSource(
+      //   docs.map(({ character, pinyin }) => ({ Character: character,Pin }))
+      // );
+
+      setDataSource(docs);
+    })();
+  }, []);
+
+  const history = useHistory();
+  const handleSaveWord = async (newWordId) => {
+    const newSavedWord = user.savedWords.map((_id) => _id);
+    newSavedWord.push(newWordId);
+    const { data } = await axios.put(`http://localhost:5000/user/${user._id}`, {
+      savedWords: newSavedWord,
+    });
+    console.log({ newSavedWord, data });
+  };
+
+  const handleDeleteSavedWord = async (wordId) => {
+    setIsLoading(true);
+    const savedWordAfterD = user.savedWords.filter((_id) => _id !== wordId);
+    // newSavedWord.push(wordId);
+    const { data } = await axios.put(`http://localhost:5000/user/${user._id}`, {
+      savedWords: savedWordAfterD,
+    });
+    setDataSource(savedWordAfterD);
+    console.log({ savedWordAfterD });
+
+    // window.location.reload(false);
+    history.push("/");
+    history.push("/lesson");
+
+    setIsLoading(false);
+  };
+
   const columns = [
     {
       title: "Character",
-      dataIndex: "Character",
+      dataIndex: "character",
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -120,7 +185,7 @@ export const WordsTable = () => {
     },
     {
       title: "Pinyin",
-      dataIndex: "Pinyin",
+      dataIndex: "pinyin",
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -172,7 +237,7 @@ export const WordsTable = () => {
     },
     {
       title: "English Translation",
-      dataIndex: "English",
+      dataIndex: "englishTranslation",
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -224,7 +289,7 @@ export const WordsTable = () => {
     },
     {
       title: "Sentence",
-      dataIndex: "Sentence",
+      dataIndex: "sentence",
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -274,8 +339,29 @@ export const WordsTable = () => {
         return record.Sentence.toLowerCase().includes(value.toLowerCase());
       },
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (item) =>
+        dataSource.length >= 1 ? (
+          lessonId ? (
+            <button className="btn" onClick={() => handleSaveWord(item._id)}>
+              save
+            </button>
+          ) : (
+            <button
+              className="btn"
+              onClick={() => handleDeleteSavedWord(item._id)}
+            >
+              delete
+            </button>
+          )
+        ) : null,
+    },
   ];
-  return (
+  return isLoading ? (
+    <Loading></Loading>
+  ) : (
     <div>
       <header>
         <Table
@@ -285,6 +371,7 @@ export const WordsTable = () => {
             margin: 10,
             justifyContent: "center",
           }}
+          rowClassName={() => "editable-row"}
           columns={columns}
           dataSource={dataSource}
         ></Table>

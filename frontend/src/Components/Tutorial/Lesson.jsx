@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Icon1 } from "./Icon1";
 import { SkillModal } from "./SkillModal";
 
-export const Lesson = ({ lesson: { title, iconName } }) => {
+export const Lesson = ({ lesson: { title, iconName, _id } }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -34,7 +34,7 @@ export const Lesson = ({ lesson: { title, iconName } }) => {
             <span className="_378Tf _3qO9M _33VdW">{title}</span>
           </div>
         </div>
-        <SkillModal isOpen={isOpen} title={title} />
+        <SkillModal isOpen={isOpen} title={title} lessonId={_id} />
       </div>
     </a>
   );

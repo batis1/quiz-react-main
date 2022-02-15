@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Form, Input, Button } from "antd";
 import { useHistory } from "react-router-dom";
 import {
@@ -8,8 +8,10 @@ import {
 } from "@ant-design/icons";
 import "./Login.css";
 import axios from "axios";
+import { actions, GlobalContext } from "../../App";
 const Login = (props) => {
   const [formStatus, setFormStatus] = useState("idle");
+  const { _, dispatch } = useContext(GlobalContext);
   const history = useHistory();
   useEffect(() => {
     if (props.user) {
@@ -28,6 +30,9 @@ const Login = (props) => {
     console.log({ data });
     setFormStatus("success");
     props.setUser(data.user);
+
+    dispatch({ type: actions.SET_USER, payload: { user: data.user._doc } });
+
     history.push("/");
     if (data.auth) {
       try {

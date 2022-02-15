@@ -3,7 +3,7 @@ import { SkillModalSC } from "./TutorialSC";
 import { useHistory } from "react-router-dom";
 import { actions, GlobalContext } from "../../App";
 
-export const SkillModal = ({ isOpen, title }) => {
+export const SkillModal = ({ isOpen, title, lessonId }) => {
   const history = useHistory();
 
   const { state, dispatch } = useContext(GlobalContext);
@@ -14,7 +14,19 @@ export const SkillModal = ({ isOpen, title }) => {
     <SkillModalSC isOpen={isOpen} className="skill-modal-container skm-pointer">
       <div>
         <div className="skm-start-btn-container">
-          <button className="skm-start-btn">Lesson</button>
+          <button
+            className="skm-start-btn"
+            onClick={() => {
+              dispatch({
+                type: actions.SET_LESSON_PARAMS,
+                payload: { level: title, isGame: false, lessonId },
+              });
+
+              history.push("/lesson");
+            }}
+          >
+            Lesson
+          </button>
         </div>
         <div className="skm-start-btn-container">
           <button
@@ -22,8 +34,8 @@ export const SkillModal = ({ isOpen, title }) => {
             // onClick={() => history.push("/quiz/false")}
             onClick={() => {
               dispatch({
-                type: actions.SET_IS_GAME_SET_LEVEL,
-                payload: { level: title, isGame: false },
+                type: actions.SET_LESSON_PARAMS,
+                payload: { level: title, isGame: false, lessonId: "124425" },
               });
 
               history.push("/quiz");

@@ -6,7 +6,12 @@ import { actions, GlobalContext } from "../App";
 
 export const ButtonOptions = () => {
   const history = useHistory();
-  const { state, dispatch } = useContext(GlobalContext);
+  const {
+    state: {
+      user: { savedWords },
+    },
+    dispatch,
+  } = useContext(GlobalContext);
   const [show, setShow] = useState(true);
   return (
     <div
@@ -25,7 +30,7 @@ export const ButtonOptions = () => {
         // to={"/quiz"}
         onClick={() => {
           dispatch({
-            type: actions.SET_IS_GAME_SET_LEVEL,
+            type: actions.SET_LESSON_PARAMS,
             payload: { level: "", isGame: true },
           });
           history.push("/quiz");
@@ -47,11 +52,11 @@ export const ButtonOptions = () => {
         style={{
           width: "30%",
         }}
-        onClick={() => history.push("/test")}
+        onClick={() => history.push("/lesson")}
       >
         SAVED WORDS
         <Badge
-          count={show ? 25 : 0}
+          count={show ? savedWords.length : 0}
           style={{ background: "#e67329", color: "white", margin: "5px" }}
         />
       </Button>
