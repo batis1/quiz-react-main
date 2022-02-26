@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ###
-GET {{url}}?userId=61c95fec08224c1da4cbd3f3
+GET {{url}}?query=锻炼
 
 ###
 

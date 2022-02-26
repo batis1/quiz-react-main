@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import "./Home.css";
 import clocklogo from "../../images/clocklogo.svg";
@@ -6,8 +6,10 @@ import ProfilePicture from "../../images/ProfilePicture.jpg";
 import imageex from "../../images/imageex.svg";
 // import hero from "../../images/hero.svg";
 import hero from "../../images/HomeHsk1.png";
-import { ButtonOptions } from "../ButtonOptions";
+// import { ButtonOptions } from "../ButtonOptions/ButtonOptions";
 import { Switch } from "antd";
+import { GlobalContext } from "../../App";
+import { ButtonOptions } from "../ButtonOptions/ButtonOptions";
 
 const Home = (props) => {
   const history = useHistory();
@@ -15,8 +17,10 @@ const Home = (props) => {
   const switchTheme = () => {
     const newTheme = props.theme === "light" ? "dark" : "light";
     props.setTheme(newTheme);
-    props.setIsThemeChange(true);
+    // props.setIsThemeChange(true);
   };
+
+  const { s } = useContext(GlobalContext);
 
   return (
     <>
@@ -53,7 +57,7 @@ const Home = (props) => {
                   className="btn homebtn white"
                 >
                   {/* HOW TO PLAY */}
-                  GUIDES
+                  HELP
                 </button>
               </div>
             ) : (

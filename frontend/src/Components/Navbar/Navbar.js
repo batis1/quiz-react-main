@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
-import { NavLink } from "react-router-dom";
+import { NavLink, useHistory, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import Logo from "../Logo/Logo";
 import { DropdownOptions } from "../DropdownOptions/DropdownOptions";
+import { Input } from "antd";
+import { actions, GlobalContext } from "../../App";
+
+const { Search } = Input;
 
 const Navbar = ({ user, setUser }) => {
   const useBigLogo = (query) => {
@@ -26,6 +30,7 @@ const Navbar = ({ user, setUser }) => {
 
   let isPageWide = useBigLogo("(min-width: 1000px)");
 
+  const [searchInput, setSearchInput] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const handleToggle = () => setMenuOpen((prev) => !prev);
   const closeMenu = () => setMenuOpen(false);
@@ -34,6 +39,27 @@ const Navbar = ({ user, setUser }) => {
     { value: "TUTORIAL", to: "/tutorial" },
     { value: "SAVED WORDS", to: "" },
   ];
+
+  const {
+    // state: { user },
+    _,
+    dispatch,
+  } = useContext(GlobalContext);
+
+  const history = useHistory();
+  const handleOnSearch = (value) => {
+    dispatch({
+      type: actions.SET_LESSON_PARAMS,
+      payload: { lessonId: "", searchInput: value },
+    });
+
+    history.push("/lesson");
+    console.log(value);
+    setSearchInput("");
+  };
+
+  const { pathname } = useLocation();
+
   return (
     <header>
       {isPageWide ? (
@@ -41,6 +67,22 @@ const Navbar = ({ user, setUser }) => {
       ) : (
         <Logo type="horizontal" className="logo" />
       )}
+
+      {user && pathname === "/" && (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Search
+            style={{ width: "450px" }}
+            className="form-input"
+            placeholder="search for words by hanzi..."
+            value={searchInput}
+            onSearch={handleOnSearch}
+            onChange={(e) => setSearchInput(e.target.value)}
+            enterButton="Search"
+            // onClick={handleOnSearch}
+          />
+        </div>
+      )}
+
       <nav className="navbar">
         <button onClick={handleToggle}>
           {menuOpen ? (
@@ -74,7 +116,7 @@ const Navbar = ({ user, setUser }) => {
             activeClassName="navbar-selected"
             onClick={closeMenu}
           >
-            Leader board
+            Score board
           </NavLink>
 
           {/* <NavLink
@@ -141,8 +183,19 @@ const Navbar = ({ user, setUser }) => {
             onClick={closeMenu}
           >
             {/* How to play */}
-            GUIDES
+            HELP
           </NavLink>
+          {user && (
+            <NavLink
+              to="/Profile"
+              className="navbar-item"
+              activeClassName="navbar-selected"
+              onClick={closeMenu}
+            >
+              {/* How to play */}
+              PROFILE
+            </NavLink>
+          )}
 
           {!user ? (
             <NavLink

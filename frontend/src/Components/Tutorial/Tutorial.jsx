@@ -7,7 +7,7 @@ export const Tutorial = () => {
   return (
     <div
       style={{
-        height: "60vh",
+        height: "80vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

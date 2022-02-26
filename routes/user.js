@@ -67,7 +67,14 @@ router.post("/login", (req, res) => {
 router.put("/:id", async (req, res) => {
   const user = await User.findById(req.params.id);
   console.log({ user, savedWords: req.body.savedWords });
-  user.savedWords = req.body.savedWords ? req.body.savedWords : user.savedWords;
+
+  const updateOptions = ["username", "savedWords"];
+
+  for (let index = 0; index < updateOptions.length; index++) {
+    const element = updateOptions[index];
+
+    user[element] = req.body[element] ? req.body[element] : user[element];
+  }
 
   await user.save();
   res.send({ message: "user update successfully" });

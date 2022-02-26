@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Table, Button, Space, Input } from "antd";
-
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { GlobalContext } from "../App";
+import { actions, GlobalContext } from "../App";
 import Loading from "./Loading/Loading";
 import useLocalStorage from "use-local-storage";
 import { useHistory } from "react-router-dom";
@@ -74,18 +73,46 @@ export const WordsTable = () => {
   ]);
 
   const {
-    state: { lessonId, user },
+    state: { lessonId, user, searchInput },
     dispatch,
   } = useContext(GlobalContext);
 
   const [userLocal, setUser] = useLocalStorage("user", user);
+  const history = useHistory();
+
+  const updateWord = (docs) => {
+    let words = docs;
+
+    const updateWords = [];
+    for (let index = 0; index < words.length; index++) {
+      const wo = words[index];
+
+      if (user.savedWords.includes(wo._id))
+        updateWords.push({ ...wo, isSaved: true });
+      else {
+        updateWords.push({ ...wo });
+      }
+    }
+    // words = words.map(({ words }) =>
+    //   user.savedWords.includes(words._id)
+    //     ? { ...words, isSaved: true }
+    //     : words
+    // );
+    console.log(updateWords);
+    setDataSource(updateWords);
+  };
 
   useEffect(() => {
     (async () => {
+      if (!user) {
+        history.push("/login");
+      }
       setIsLoading(true);
       let apiUrl = "http://localhost:5000/words";
       if (lessonId) {
         apiUrl = `${apiUrl}?lessonId=${lessonId}`;
+      } else if (searchInput) {
+        apiUrl = `${apiUrl}?query=${searchInput}`;
       } else {
         apiUrl = `${apiUrl}?userId=${user._id}`;
       }
@@ -98,18 +125,34 @@ export const WordsTable = () => {
       // setDataSource(
       //   docs.map(({ character, pinyin }) => ({ Character: character,Pin }))
       // );
+      if (user.savedWords) {
+        updateWord(docs);
+
+        return;
+      }
 
       setDataSource(docs);
     })();
   }, []);
 
-  const history = useHistory();
   const handleSaveWord = async (newWordId) => {
     const newSavedWord = user.savedWords.map((_id) => _id);
+    console.log({ newWordId });
     newSavedWord.push(newWordId);
+
+    // update savedWord in the database
     const { data } = await axios.put(`http://localhost:5000/user/${user._id}`, {
       savedWords: newSavedWord,
     });
+
+    // update savedWord in context
+    dispatch({
+      type: actions.UPDATE_USER,
+      payload: { savedWords: newSavedWord },
+    });
+
+    // updateWord()
+    updateWord(dataSource);
     console.log({ newSavedWord, data });
   };
 
@@ -119,6 +162,11 @@ export const WordsTable = () => {
     // newSavedWord.push(wordId);
     const { data } = await axios.put(`http://localhost:5000/user/${user._id}`, {
       savedWords: savedWordAfterD,
+    });
+
+    dispatch({
+      type: actions.UPDATE_USER,
+      payload: { savedWords: savedWordAfterD },
     });
     setDataSource(savedWordAfterD);
     console.log({ savedWordAfterD });
@@ -344,9 +392,13 @@ export const WordsTable = () => {
       key: "action",
       render: (item) =>
         dataSource.length >= 1 ? (
-          lessonId ? (
-            <button className="btn" onClick={() => handleSaveWord(item._id)}>
-              save
+          lessonId || searchInput ? (
+            <button
+              className="btn"
+              disabled={item.isSaved}
+              onClick={() => handleSaveWord(item._id)}
+            >
+              {item.isSaved ? "saved" : "save"}
             </button>
           ) : (
             <button

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import CircleControls from "react-player-circle-controls";
 import "react-player-circle-controls/dist/styles.css";
-import { ButtonOptions } from "./ButtonOptions";
+import { ButtonOptions } from "./ButtonOptions/ButtonOptions";
 import Loading from "./Loading/Loading";
 import Quiz from "./Quiz/Quiz";
 import { SkillHeaderContainer } from "./SkillHeaderContainer/SkillHeaderContainer";

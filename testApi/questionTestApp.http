@@ -4,7 +4,7 @@
 
 GET {{url}}/61c97ca208113e4e40e89e89 HTTP/1.1
 ###
-GET {{url}}?category=Writing
+GET {{url}}?category=Listing&level=Basice 1
 ###
 DELETE {{url}}/61fd4907cf44b71f685bfc95 HTTP/1.1
 ###
@@ -17,7 +17,7 @@ Content-Type: application/json
     "difficulty": "esay",
     "question":"喜欢 不 我 你",
     "correct_answer":"我不喜欢你",
-    "level":"Basics 1"
+    "level":"Basice 1"
 }
 
 ###
@@ -32,7 +32,7 @@ Content-Type: application/json
     "question":"Listing question?",
     "correct_answer":"我的爱好是爱你",
     "incorrect_answers":["有用", "跑步","锻炼"],
-    "level":"Basics 1",
+    "level":"Basice 1",
     "audioDescription":"some audio description",
     "popupDescription":{"pinyin":"some pinyin description",  "translation":"some translation description" },
     "audioUrl":"C:/Users/batis/documents/0final/quiz-app-main/frontend/public/uploads/H41009.mp3"

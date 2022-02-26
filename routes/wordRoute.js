@@ -6,7 +6,7 @@ const { User } = require("../models/User");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { lessonId, userId } = req.query;
+  const { lessonId, userId, query } = req.query;
   const objectQuery = {};
 
   if (userId) {
@@ -28,6 +28,10 @@ router.get("/", async (req, res) => {
 
   if (lessonId) {
     objectQuery.lessonId = lessonId;
+  }
+
+  if (query) {
+    objectQuery.character = query;
   }
 
   const docs = await Word.find(objectQuery);

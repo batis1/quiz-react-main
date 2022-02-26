@@ -11,7 +11,7 @@ import Cellipse from "../../images/Cellipse.svg";
 import Dellipse from "../../images/Dellipse.svg";
 import shuffleOptions from "../../lib/shuffleOptions";
 import Replacer from "../../lib/Replacer";
-import { randomSparks } from "./spark";
+// import { randomSparks } from "./spark";
 import { correctAnimation, wrongAnimation } from "./answerAnimation";
 import AudioPlayer from "../AudioPlayer";
 import { SkillHeaderContainer } from "../SkillHeaderContainer/SkillHeaderContainer";
@@ -42,7 +42,6 @@ const points = {
 
 const optionImg = [Aellipse, Bellipse, Cellipse, Dellipse];
 
-
 const Quiz = ({ user, reset }) => {
   const [currQuestion, setCurrQuestion] = useState(0);
   const [optionChosen, setOptionChosen] = useState();
@@ -51,7 +50,7 @@ const Quiz = ({ user, reset }) => {
   const [gameState, setGameState] = useState("loading");
   const [score, setScore] = useState(0);
   const [questions, setQuestions] = useState();
-  const [timer, setTimer] = useState(1000 * 60 * 30);
+  const [timer, setTimer] = useState(1000 * 60);
   const [timerState, setTimerState] = useState("idle");
   const [showBomb, setShowBomb] = useState(true);
   const [optionStyles, setOptionStyles] = useState([]);
@@ -101,6 +100,7 @@ const Quiz = ({ user, reset }) => {
             setGameState("active");
             setTimerState("active");
             setCurrQuestion(0);
+            setAnswerProcessed(true);
           })
           .catch((e) => {
             console.log(e);
@@ -121,20 +121,20 @@ const Quiz = ({ user, reset }) => {
           window.innerHeight / 2 +
           window.scrollY -
           70;
-        randomSparks.tune({ x: 85, y: y });
+        // randomSparks.tune({ x: 85, y: y });
         console.log(y);
         if (timerState === "active") {
           console.log("spark");
 
-          randomSparks.play();
+          // randomSparks.play();
         } else {
-          randomSparks.stop();
+          // randomSparks.stop();
         }
       } catch {
         console.log("caught");
       } finally {
         return () => {
-          randomSparks.stop();
+          // randomSparks.stop();
         };
       }
     }
@@ -169,16 +169,26 @@ const Quiz = ({ user, reset }) => {
     if (gameState !== "loading") {
       if (answerProcessed) {
         setAnswerProcessed(false);
-        console.log("creating question", { currQuestion });
-        const [answers, correctIndex] = shuffleOptions(
-          questions[currQuestion].correct_answer,
-          questions[currQuestion].incorrect_answers
-        );
-        setOptions(answers);
-        setCorrectAnswerIndex(correctIndex);
+        console.log("creating question", {
+          currQuestion,
+          q: questions[currQuestion],
+          questions,
+        });
+
+        if (
+          questions[currQuestion]?.correct_answer &&
+          questions[currQuestion]?.incorrect_answers
+        ) {
+          const [answers, correctIndex] = shuffleOptions(
+            questions[currQuestion]?.correct_answer,
+            questions[currQuestion]?.incorrect_answers
+          );
+          setOptions(answers);
+          setCorrectAnswerIndex(correctIndex);
+        }
       }
     }
-  }, [gameState, currQuestion, answerProcessed]);
+  }, [gameState, currQuestion, answerProcessed, questions]);
 
   useEffect(() => {
     console.log("options style useEffect", options);

@@ -96,6 +96,10 @@ export const MainWrapper = styled.div`
   .bscs2 {
     background-position: 0 -72px;
   }
+  .LessonTitle {
+    color: var(--lightAccent);
+    font-size: 20px;
+  }
 `;
 
 export const SkillModalSC = styled.div`

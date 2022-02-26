@@ -23,4 +23,5 @@ Content-Type: application/json
 ###
 
 
-GET {{url}}/questions
+# GET {{url}}/questions
+GET {{url}}/user

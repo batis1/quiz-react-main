@@ -27,29 +27,68 @@ import useLocalStorage from "use-local-storage";
 import { Tutorial } from "./Components/Tutorial/Tutorial";
 import QuoteApp from "./Components/DraggableList/MainDraggable";
 import Test from "./Components/Test";
-import BIRDS from "vanta/dist/vanta.birds.min.js";
+import BIRDS from "vanta/dist/vanta.dots.min.js";
 import { WordsTable } from "./Components/WordsTable";
+import Profile from "./Components/ProfileInformation/Profile";
+// import { Profile } from "./Components/Profile";
+// import Profile from "./Components/ProfileInformation/Profile";
 export const GlobalContext = React.createContext();
 
 export const actions = {
   SET_LESSON_PARAMS: "SET_LESSON_PARAMS",
   SET_USER: "SET_USER",
+  UPDATE_USER: "UPDATE_USER",
 };
 
-const initialState = { isGame: true, level: "", lessonId: "", user: null };
+const initialState = {
+  isGame: true,
+  level: "",
+  lessonId: "",
+  searchInput: "",
+  user: null,
+};
+
 const reducer = (
   state,
-  { type, payload: { level, isGame, lessonId, user } }
+  { type, payload: { searchInput, level, isGame, lessonId, user, savedWords } }
 ) => {
+  console.log({ type });
   switch (type) {
     case actions.SET_LESSON_PARAMS:
       console.log("in Toggle is game");
-      console.log({ level, isGame });
-      return { ...state, isGame, level, lessonId };
+      console.log({ level, isGame, lessonId });
+
+      const updateObject = {};
+
+      if (isGame !== undefined) {
+        updateObject.isGame = isGame;
+      }
+
+      if (level !== undefined) {
+        updateObject.level = level;
+      }
+
+      if (lessonId !== undefined) {
+        updateObject.lessonId = lessonId;
+      }
+
+      if (searchInput !== undefined) {
+        updateObject.searchInput = searchInput;
+      }
+
+      // searchInput;
+      return { ...state, ...updateObject };
     // return { ...state, isGame: true };
 
     case actions.SET_USER:
       return { ...state, user };
+    case actions.UPDATE_USER:
+      const newUser = state.user;
+
+      newUser.savedWords = savedWords ? savedWords : newUser.savedWords;
+
+      return { ...state, user: newUser };
+
     default:
       return state;
   }
@@ -62,7 +101,7 @@ function App() {
 
   const [darkMode, setDarkMode] = useState(false);
   const [theme, setTheme] = useLocalStorage("theme" ? "dark" : "light");
-  const [isThemeChange, setIsThemeChange] = useState(false);
+  // const [isThemeChange, setIsThemeChange] = useState(false);
 
   useEffect(() => {
     // get user from session storage
@@ -96,92 +135,97 @@ function App() {
     }, 5000);
   });
 
-  useEffect(() => {
-    console.log({ vantaEffect, theme });
-    if (theme === "light") {
-      if (isThemeChange) {
-        console.log("light herec");
-        setVantaEffect(
-          BIRDS({
-            el: myRef.current,
-            color1: 0xabadcd,
-            color2: 0xded7d2,
-            backgroundColor: 0xe6e6e6,
-            //and so on...
-          })
-        );
-        setIsThemeChange(false);
-      }
-    } else if (theme === "dark") {
-      if (isThemeChange) {
-        console.log("light dark");
+  // useEffect(() => {
+  //   console.log({ vantaEffect, theme });
+  //   if (theme === "light") {
+  //     if (isThemeChange) {
+  //       console.log("light herec");
+  //       setVantaEffect(
+  //         BIRDS({
+  //           el: myRef.current,
+  //           color1: "#363537",
+  //           color2: "#363537",
+  //           backgroundColor: 0xe6e6e6,
+  //           //and so on...
+  //         })
+  //       );
+  //       setIsThemeChange(false);
+  //     }
+  //   } else if (theme === "dark") {
+  //     if (isThemeChange) {
+  //       console.log("light dark");
 
-        setVantaEffect(
-          BIRDS({
-            el: myRef.current,
-            color1: 0xabadcd,
-            color2: 0xded7d2,
-            backgroundColor: 0x161515,
-            //and so on...
-          })
-        );
-        setIsThemeChange(false);
-      }
-    }
+  //       setVantaEffect(
+  //         BIRDS({
+  //           el: myRef.current,
+  //           color1: "#e67329",
+  //           color2: 0xded7d2,
+  //           backgroundColor: "#363537",
+  //           //and so on...
+  //         })
+  //       );
+  //       setIsThemeChange(false);
+  //     }
+  //   }
 
-    return () => {
-      if (vantaEffect) vantaEffect.destroy();
-    };
-  }, [isThemeChange]);
+  //   return () => {
+  //     if (vantaEffect) vantaEffect.destroy();
+  //   };
+  // }, [isThemeChange]);
 
   const { pathname } = useLocation();
-  console.log({ pathname });
-  const [vantaEffect, setVantaEffect] = useState(0);
-  const myRef = useRef(null);
-  useEffect(() => {
-    console.log({ vantaEffect, theme });
-    if (theme === "light") {
-      if (isThemeChange && !vantaEffect) {
-        console.log("light herec");
-        setVantaEffect(
-          BIRDS({
-            el: myRef.current,
-            color1: 0xabadcd,
-            color2: 0xded7d2,
-            backgroundColor: 0xe6e6e6,
-            //and so on...
-          })
-        );
-      }
-    } else if (theme === "dark") {
-      if (!vantaEffect) {
-        console.log("light dark");
+  // console.log({ pathname });
+  // const [vantaEffect, setVantaEffect] = useState(0);
+  // const myRef = useRef(null);
+  // useEffect(() => {
+  //   console.log({ vantaEffect, theme });
+  //   if (theme === "light") {
+  //     if (isThemeChange && !vantaEffect) {
+  //       console.log("light herec");
+  //       setVantaEffect(
+  //         BIRDS({
+  //           el: myRef.current,
+  //           color1: "#363537",
+  //           color2: "#363537",
+  //           backgroundColor: 0xe6e6e6,
+  //           //and so on...
+  //         })
+  //       );
+  //     }
+  //   } else if (theme === "dark") {
+  //     if (!vantaEffect) {
+  //       console.log("light dark");
 
-        setVantaEffect(
-          BIRDS({
-            el: myRef.current,
-            color1: 0xabadcd,
-            color2: 0xded7d2,
-            backgroundColor: 0x161515,
-            //and so on...
-          })
-        );
-      }
-    }
+  //       setVantaEffect(
+  //         BIRDS({
+  //           el: myRef.current,
+  //           color1: "#e67329",
+  //           color2: 0xded7d2,
+  //           backgroundColor: "#363537",
+  //           //and so on...
+  //         })
+  //       );
+  //     }
+  //   }
 
-    return () => {
-      if (vantaEffect) vantaEffect.destroy();
-    };
-  }, [vantaEffect]);
+  //   return () => {
+  //     if (vantaEffect) vantaEffect.destroy();
+  //   };
+  // }, [vantaEffect]);
 
   return (
     // <Router>
     <GlobalContext.Provider value={{ state, dispatch }}>
-      <div className={`app`} data-theme={theme} ref={myRef}>
+      <div className={`app`} data-theme={theme}>
+        {/* ref={myRef} */}
         <Navbar user={user} setUser={setUser} />
         <div
           className={`content ${
-            pathname === "/quiz" || pathname === "/tutor" ? "height-auto" : ""
+            pathname === "/quiz" ||
+            pathname === "/tutor" ||
+            pathname === "/Profile"
+              ? "height-auto"
+              : ""
           }`}
         >
           <Switch>
@@ -190,7 +234,7 @@ function App() {
                 user={user}
                 theme={theme}
                 setTheme={setTheme}
-                setIsThemeChange={setIsThemeChange}
+                // setIsThemeChange={setIsThemeChange}
               />
             </Route>
             <Route path="/signup">
@@ -217,11 +261,14 @@ function App() {
             <Route path="/leaderboard">
               <Scoreboard user={user} />
             </Route>
-            <Route path="/test">
+            {/* <Route path="/Profile">
+              <Profile user={user} />
+            </Route> */}
+            <Route path="/Profile">
               {/* <ConstructSentence user={user} /> */}
-              <Test theme={theme} setTheme={setTheme} />
+              <Profile user={user} />
               {/* <QuoteApp /> */}
-            </Route>{" "}
+            </Route>
             <Route path="/tutorial">
               <Tutorial user={user} />
             </Route>

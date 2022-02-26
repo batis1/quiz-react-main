@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Tutor_card from "./Tutor_card.js";
 import "./Tutor.css";
 import ImgCart from "./imagesTest/profile-picture.jpg";
 import { Input } from "antd";
+import Loading from "../Loading/Loading";
 // import { ThumbDown } from "@mui/icons-material";
 
 const Tutor = () => {
+  const [isLoading, setIsLoading] = useState(false);
   console.log(Tutor_card);
   const listItems = Tutor_card.map((item) => (
     <div className="card-tutor" key={item.id}>
@@ -24,7 +26,9 @@ const Tutor = () => {
       </div>
     </div>
   ));
-  return (
+  return isLoading ? (
+    <Loading></Loading>
+  ) : (
     <div className="tutor-container">
       <Input className="form-input" placeholder="search for tutor by name..." />
       <div className="tutor-main_content">

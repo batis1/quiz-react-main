@@ -245,6 +245,10 @@ form p {
 form .btn {
   margin-top: 1em;
 }
+/* .ant-btn:not([disabled]):hover {
+  text-decoration: none;
+  color: #e67329;
+} */
 
 /* ----- Media Queries ----- */
 

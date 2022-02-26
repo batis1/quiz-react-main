@@ -31,7 +31,7 @@ export const Lesson = ({ lesson: { title, iconName, _id } }) => {
             </div>
           </span>
           <div>
-            <span className="_378Tf _3qO9M _33VdW">{title}</span>
+            <span className="LessonTitle">{title}</span>
           </div>
         </div>
         <SkillModal isOpen={isOpen} title={title} lessonId={_id} />
